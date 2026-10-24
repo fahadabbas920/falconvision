@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { company, hero, highlights } from '../data/site';
+---
+
+<section id="top" class="relative isolate flex min-h-svh items-end overflow-hidden bg-ink-950 text-white">
+  <Image
+    src={hero.image}
+    alt={hero.imageAlt}
+    widths={[640, 1024, 1600]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-10 size-full object-cover saturate-50 motion-safe:animate-hero-zoom"
+  />
+  <div class="absolute inset-0 -z-10 bg-linear-to-r from-ink-950 via-ink-950/80 to-ink-950/30"></div>
+  <div class="absolute inset-0 -z-10 bg-linear-to-t from-ink-950 via-transparent to-ink-950/60"></div>
+
+  <div class="container-x pt-32 pb-12 sm:pb-16">
+    <div class="max-w-3xl" data-reveal>
+      <p class="eyebrow text-brand-400">{company.name}</p>
+      <h1 class="mt-5 text-4xl leading-[1.05] font-extrabold tracking-tight text-balance sm:text-6xl lg:text-7xl">
+        Precise rebar detailing that <span class="text-brand-400">builds right</span> the first time.
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg text-white/75 sm:text-xl">
+        Rebar detailing, bar bending schedules, shop drawings and estimation for contractors, fabricators and
+        engineers, prepared to ACI, BS, AS/NZS and IS codes.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="#contact" class="btn-primary">
+          Request a free quote <Icon name="arrow" class="size-4" />
+        </a>
+        <a href="#services" class="btn-ghost">Explore our services</a>
+      </div>
+    </div>
+
+    <dl data-reveal style="--reveal-delay: 250ms" class="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:mt-24 lg:grid-cols-4">
+      {
+        highlights.map((item) => (
+          <div class="bg-ink-950/70 p-5 backdrop-blur sm:p-6">
+            <dt class="text-xs text-white/60 sm:text-sm">{item.label}</dt>
+            <dd class="mt-1 text-xl font-bold text-brand-400 sm:text-2xl">{item.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

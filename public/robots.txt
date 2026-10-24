@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.falconvisionengineering.com/sitemap-index.xml

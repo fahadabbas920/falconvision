@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Neutral charcoal with a slight green cast, so it sits well with the logo. */
+  --color-ink-50: #f4f6f5;
+  --color-ink-100: #e4e9e6;
+  --color-ink-200: #c9d2cd;
+  --color-ink-300: #9fada5;
+  --color-ink-400: #6f8077;
+  --color-ink-500: #52625a;
+  --color-ink-600: #3e4b45;
+  --color-ink-700: #2e3934;
+  --color-ink-800: #1f2724;
+  --color-ink-900: #151b18;
+  --color-ink-950: #0d1110;
+
+  /* Deeper, calmer take on the logo green. 500 carries white text; 400 is for text on dark. */
+  --color-brand-50: #edf7ee;
+  --color-brand-300: #a5d6a7;
+  --color-brand-400: #6dbb72;
+  --color-brand-500: #2f7d38;
+  --color-brand-600: #286b30;
+  --color-brand-700: #1f5626;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-hero-zoom: hero-zoom 2.4s var(--ease-out-soft) both;
+
+  @keyframes hero-zoom {
+    from {
+      scale: 1.08;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* clear the fixed header on small screens; on desktop sections include that space themselves */
+    scroll-padding-top: 4.5rem;
+
+    @variant lg {
+      scroll-padding-top: 0;
+    }
+  }
+
+  body {
+    @apply bg-white font-sans text-ink-900 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/*
+ * Page section. On desktop each one fills exactly one screen (under the fixed 4.5rem header),
+ * with its content centred, so jumping to it from the nav shows the whole section and nothing else.
+ */
+@utility section-screen {
+  @apply py-20 sm:py-24 lg:flex lg:min-h-svh lg:flex-col lg:justify-center lg:pt-[calc(4.5rem+2.5rem)] lg:pb-10;
+}
+
+@utility eyebrow {
+  @apply inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase;
+
+  &::before {
+    content: "";
+    @apply h-px w-8 bg-current;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition duration-300 active:scale-[0.98];
+
+  /* trailing arrow nudges forward on hover */
+  & svg:last-child {
+    transition: translate 0.3s var(--ease-out-soft);
+  }
+
+  &:hover svg:last-child {
+    translate: 3px 0;
+  }
+}
+
+@utility btn-primary {
+  @apply btn bg-brand-500 text-white hover:bg-brand-600;
+}
+
+@utility btn-ghost {
+  @apply btn border border-white/30 text-white hover:border-white hover:bg-white/10;
+}
+
+/*
+ * Scroll reveal: elements with [data-reveal] fade up once when they enter the viewport
+ * (see the observer in Layout.astro). Uses an animation rather than a transition so it
+ * doesn't override the element's own hover transitions. Optional stagger via --reveal-delay.
+ * Only applies when JS is running (.js) and the visitor hasn't asked for reduced motion.
+ */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal]:not(.is-visible) {
+    opacity: 0;
+  }
+
+  .js [data-reveal].is-visible {
+    animation: reveal 0.9s var(--ease-out-soft) var(--reveal-delay, 0ms) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

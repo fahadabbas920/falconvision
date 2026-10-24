@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+import { services } from '../data/site';
+---
+
+<section id="services" class="section-screen bg-ink-50">
+  <div class="container-x">
+    <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-end lg:gap-16" data-reveal>
+      <div class="max-w-2xl">
+        <p class="eyebrow text-brand-600">Our services</p>
+        <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
+          Everything from detailing to take-offs
+        </h2>
+      </div>
+      <p class="max-w-md text-lg text-ink-700">
+        Fabrication-ready reinforcement drawings, schedules and quantities, tailored to your codes, formats and
+        deadlines.
+      </p>
+    </div>
+
+    <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3">
+      {
+        services.map((service, i) => (
+          <li
+            data-reveal
+            style={`--reveal-delay: ${(i % 3) * 90}ms`}
+            class="group relative overflow-hidden rounded-3xl border border-ink-100 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:shadow-xl lg:p-7"
+          >
+            <span class="absolute top-5 right-6 text-4xl font-extrabold text-ink-50 transition group-hover:text-brand-300/40">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="relative grid size-12 place-items-center rounded-2xl bg-ink-950 text-brand-400 transition group-hover:bg-brand-500 group-hover:text-white">
+              <Icon name={service.icon} class="size-6" />
+            </span>
+            <h3 class="relative mt-5 text-lg font-bold">{service.title}</h3>
+            <p class="relative mt-2 text-[0.9375rem] text-ink-600">{service.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

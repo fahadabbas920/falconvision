@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import { whyUs } from '../data/site';
+---
+
+<section id="why-us" class="section-screen relative overflow-hidden bg-ink-950 text-white">
+  <div class="container-x grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+    <div data-reveal>
+      <p class="eyebrow text-brand-400">Why choose us</p>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
+        Detailing you can rely on
+      </h2>
+      <p class="mt-5 text-lg text-white/70">
+        Accurate drawings mean fewer site errors, less wasted steel and smoother approvals. That's what we deliver on
+        every job.
+      </p>
+
+      <dl class="mt-10 grid gap-8 sm:grid-cols-2">
+        {
+          whyUs.points.map((point, i) => (
+            <div class="border-l-2 border-brand-400 pl-5" data-reveal style={`--reveal-delay: ${200 + i * 100}ms`}>
+              <dt class="flex items-baseline gap-3 text-lg font-bold">
+                <span class="text-sm text-brand-400">{String(i + 1).padStart(2, '0')}</span>
+                {point.title}
+              </dt>
+              <dd class="mt-2 text-white/65">{point.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <!-- The green card swings into its tilt once revealed, and leans a little further on hover. -->
+    <div class="group relative" data-reveal style="--reveal-delay: 150ms">
+      <div
+        class="absolute -inset-4 z-0 rounded-3xl bg-brand-500/20 transition-[rotate] delay-300 duration-1000 ease-out-soft group-hover:rotate-5 group-hover:delay-0 group-[.is-visible]:rotate-3 motion-reduce:transition-none"
+      >
+      </div>
+      <Image
+        src={whyUs.image}
+        alt={whyUs.imageAlt}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        class="relative aspect-4/5 w-full rounded-3xl object-cover shadow-2xl transition-[translate] duration-700 ease-out-soft group-hover:-translate-y-1.5 sm:aspect-4/3 lg:aspect-auto lg:h-[min(38rem,calc(100svh-11rem))]"
+      />
+    </div>
+  </div>
+</section>

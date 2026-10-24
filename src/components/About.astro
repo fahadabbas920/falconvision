@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { about } from '../data/site';
+---
+
+<section id="about" class="section-screen">
+  <div class="container-x grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+    <div class="relative pb-16 sm:pb-20" data-reveal>
+      <Image
+        src={about.image}
+        alt={about.imageAlt}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        class="aspect-4/3 w-full rounded-3xl object-cover shadow-xl"
+      />
+      <Image
+        src={about.secondaryImage}
+        alt={about.secondaryImageAlt}
+        widths={[320, 640]}
+        sizes="(min-width: 1024px) 22vw, 45vw"
+        class="absolute right-0 bottom-0 aspect-square w-[45%] rounded-2xl border-8 border-white object-cover shadow-xl"
+      />
+      <div class="absolute bottom-6 left-6 hidden rounded-2xl bg-ink-950 px-5 py-4 text-white shadow-xl sm:block">
+        <p class="text-2xl font-extrabold text-brand-400">ACI · BS · IS</p>
+        <p class="text-xs text-white/70">Detailing to the codes<br />your project runs on</p>
+      </div>
+    </div>
+
+    <div data-reveal style="--reveal-delay: 120ms">
+      <p class="eyebrow text-brand-600">Our mission</p>
+      <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
+        Drawings your site team can build from
+      </h2>
+      <p class="mt-6 text-lg text-ink-700">
+        Falcon Vision Engineering LLC helps contractors, fabricators and consultants deliver reinforced concrete work
+        with confidence. We turn structural designs into clear, code-compliant detailing that cuts material waste and
+        keeps projects moving.
+      </p>
+      <p class="mt-4 text-ink-600">
+        From a single pile cap to a full tower, our detailers work to your standards and deadlines, on residential,
+        commercial and infrastructure projects.
+      </p>
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+        {
+          about.points.map((item) => (
+            <li class="flex items-center gap-3 font-medium">
+              <span class="grid size-6 shrink-0 place-items-center rounded-full bg-brand-500/15 text-brand-700">
+                <Icon name="check" class="size-3.5" />
+              </span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+      <a href="#contact" class="btn mt-10 bg-ink-950 text-white hover:bg-ink-800">
+        Discuss your project <Icon name="arrow" class="size-4" />
+      </a>
+    </div>
+  </div>
+</section>

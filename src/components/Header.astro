@@ -1,0 +1,83 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav } from '../data/site';
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-40 text-white transition-colors duration-300 data-scrolled:bg-ink-950/90 data-scrolled:shadow-lg data-scrolled:backdrop-blur"
+>
+  <div class="container-x flex h-18 items-center justify-between">
+    <a href="#top" aria-label="Falcon Vision Engineering home">
+      <Logo />
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-8 text-sm font-medium">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} class="text-white/80 transition hover:text-brand-400">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a href="#contact" class="btn-primary hidden md:inline-flex">Free quote</a>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="-mr-2 rounded-md p-2 md:hidden"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+      aria-label="Open menu"
+    >
+      <span class="menu-open"><Icon name="menu" class="size-6" /></span>
+      <span class="menu-close hidden"><Icon name="close" class="size-6" /></span>
+    </button>
+  </div>
+
+  <nav id="mobile-menu" aria-label="Mobile" class="hidden border-t border-white/10 bg-ink-950 md:hidden">
+    <ul class="container-x flex flex-col py-4">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} class="block py-3 text-base font-medium text-white/90 hover:text-brand-400">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-3">
+        <a href="#contact" class="btn-primary w-full">Free quote</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const isOpen = () => !menu.classList.contains('hidden');
+  const setScrolled = () => header.toggleAttribute('data-scrolled', window.scrollY > 24 || isOpen());
+  const setOpen = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    toggle.querySelector('.menu-open')!.classList.toggle('hidden', open);
+    toggle.querySelector('.menu-close')!.classList.toggle('hidden', !open);
+    setScrolled();
+  };
+
+  toggle.addEventListener('click', () => setOpen(!isOpen()));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  window.addEventListener('scroll', setScrolled, { passive: true });
+  setScrolled();
+</script>

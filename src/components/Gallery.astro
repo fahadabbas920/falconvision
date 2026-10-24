@@ -1,0 +1,134 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { gallery } from '../data/site';
+
+const items = await Promise.all(
+  gallery.map(async (item) => ({
+    ...item,
+    full: (await getImage({ src: item.image, width: 1600 })).src,
+  })),
+);
+---
+
+<section id="gallery" class="section-screen">
+  <div class="container-x">
+    <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+      <div class="max-w-2xl" data-reveal>
+        <p class="eyebrow text-brand-600">Gallery</p>
+        <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">Sample projects & drawings</h2>
+      </div>
+      <p class="max-w-md text-ink-600">
+        Detailing for columns, beams, slabs, core walls, piles and foundations across residential, commercial and
+        infrastructure work.
+      </p>
+    </div>
+
+    <!--
+      Desktop: 6 columns x 3 rows, row height scaled to the screen so all 12 tiles fit in one view.
+      Tiles 0 and 3 are 2x2 features; the other 10 fill the remaining cells exactly.
+    -->
+    <ul
+      class="mt-10 grid grid-flow-dense auto-rows-55 grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-60 lg:mt-12 lg:auto-rows-[clamp(8.5rem,calc((100svh-22rem)/3),15rem)] lg:grid-cols-6"
+    >
+      {
+        items.map((item, i) => (
+          <li data-reveal style={`--reveal-delay: ${(i % 6) * 60}ms`} class:list={[(i === 0 || i === 3) && 'sm:col-span-2 sm:row-span-2']}>
+            <button
+              type="button"
+              class="group relative block size-full cursor-zoom-in overflow-hidden rounded-2xl bg-ink-100 text-left"
+              data-gallery-index={i}
+              data-full={item.full}
+              data-title={item.title}
+              data-category={item.category}
+              data-alt={item.alt}
+              aria-label={`View ${item.title}`}
+            >
+              <Image
+                src={item.image}
+                alt={item.alt}
+                widths={[400, 800, 1200]}
+                sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
+                class="size-full object-cover transition duration-500 group-hover:scale-105"
+              />
+              <span class="absolute inset-0 bg-linear-to-t from-ink-950/95 via-ink-950/35 via-45% to-transparent transition group-hover:from-ink-950" />
+              <span class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 text-white lg:p-5">
+                <span>
+                  <span class="inline-block rounded-full bg-ink-950/70 px-2.5 py-1 text-[0.65rem] font-semibold tracking-wider text-brand-300 uppercase backdrop-blur-sm">
+                    {item.category}
+                  </span>
+                  <span class="mt-2 block text-base leading-snug font-bold">{item.title}</span>
+                </span>
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-white/15 opacity-0 backdrop-blur transition group-hover:opacity-100">
+                  <Icon name="expand" class="size-4" />
+                </span>
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <dialog
+    id="lightbox"
+    class="m-auto max-h-none max-w-none bg-transparent p-0 backdrop:bg-ink-950/90 backdrop:backdrop-blur-sm"
+    aria-label="Project image"
+  >
+    <figure class="relative flex w-[min(92vw,1200px)] flex-col items-center">
+      <img id="lightbox-img" src="" alt="" class="max-h-[78vh] w-auto rounded-xl object-contain shadow-2xl" />
+      <figcaption class="mt-4 text-center text-white">
+        <span id="lightbox-category" class="block text-xs font-semibold tracking-wider text-brand-400 uppercase"></span>
+        <span id="lightbox-title" class="mt-1 block text-lg font-bold"></span>
+      </figcaption>
+    </figure>
+    <button type="button" data-lightbox="close" class="fixed top-4 right-4 grid size-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="Close">
+      <Icon name="close" class="size-5" />
+    </button>
+    <button type="button" data-lightbox="prev" class="fixed top-1/2 left-3 grid size-11 -translate-y-1/2 rotate-180 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 sm:left-6" aria-label="Previous image">
+      <Icon name="arrow" class="size-5" />
+    </button>
+    <button type="button" data-lightbox="next" class="fixed top-1/2 right-3 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 sm:right-6" aria-label="Next image">
+      <Icon name="arrow" class="size-5" />
+    </button>
+  </dialog>
+</section>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lightbox-img') as HTMLImageElement;
+  const title = document.getElementById('lightbox-title')!;
+  const category = document.getElementById('lightbox-category')!;
+  const triggers = [...document.querySelectorAll<HTMLButtonElement>('[data-gallery-index]')];
+  let current = 0;
+
+  const show = (index: number) => {
+    current = (index + triggers.length) % triggers.length;
+    const { full, alt, title: t, category: c } = triggers[current].dataset;
+    img.src = full!;
+    img.alt = alt!;
+    title.textContent = t!;
+    category.textContent = c!;
+  };
+
+  triggers.forEach((trigger, i) =>
+    trigger.addEventListener('click', () => {
+      show(i);
+      dialog.showModal();
+    }),
+  );
+
+  dialog.addEventListener('click', (event) => {
+    const action = (event.target as HTMLElement).closest<HTMLElement>('[data-lightbox]')?.dataset.lightbox;
+    if (action === 'prev') show(current - 1);
+    else if (action === 'next') show(current + 1);
+    else if (action === 'close' || event.target === dialog) dialog.close();
+  });
+
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') show(current - 1);
+    if (event.key === 'ArrowRight') show(current + 1);
+  });
+
+  dialog.addEventListener('close', () => triggers[current]?.focus());
+</script>
